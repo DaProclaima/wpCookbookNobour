@@ -4,7 +4,7 @@
  * Plugin URI: https://example.com/plugins/01-plugin-api/
  * Description: This registers a few basic hooks, just to see how hooks work.
  * Version: 1.0
- * Requires at least: 5.2
+ * Requires at least: 5.6
  * Requires PHP: 8.0.0
  * Author: Vincent Dubroeucq
  * Author URI: https://vincentdubroeucq.com/
@@ -14,7 +14,6 @@
  * Domain Path: languages/
  */
 
-//
 // execute die() if someone tries to directly access the file without passing through WordPress
 defined( 'ABSPATH' ) || die();
 
@@ -65,3 +64,20 @@ function wpcookbook_footer( $args ){
 }
 
 remove_action( 'wp_footer', 'wpcookbook_footer', 15 );
+
+add_action( 'admin_footer', 'wpcookbook_admin_footer' );
+function wpcookbook_admin_footer(){
+    echo '<script>alert( \'Toto\' );</script>';
+}
+
+add_filter( 'the_content', 'wpcookbook_content' );
+/**
+ * Lists every function hooked on the current hook (the_content)
+ *
+ * @param string $content Content of the post.
+ */
+function wpcookbook_content( $content ){
+    global $wp_filter;
+    $html = '<pre>' . print_r( $wp_filter['mon_hook'], true ) . '</pre>';
+    return $content . $html;
+}

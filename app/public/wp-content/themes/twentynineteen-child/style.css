@@ -1,0 +1,23 @@
+/*
+Theme Name: Twenty Nineteen Child
+Template: twentynineteen
+Theme URI: https://example.com/themes/twentynineteen-child/
+Author: Sébastien NOBOUR
+Author URI: https://sebastiennobour.com/
+Description: This is a simple child theme used throughout all the examples
+given in the WPCookBook guide.
+Version: 1.0
+Requires at least: WordPress 4.9.6
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: twentynineteen-child
+Domain Path: /languages
+Tags: one-column, flexible-header, accessibility-ready, custom-colors,
+custom-menu, custom-logo, editor-style, featured-images, footer-widgets,
+rtl-language-support, sticky-post, threaded-comments, translation-ready
+Add copyrights and other attributions here.
+*/
+
+body {
+    background-color: teal;
+}

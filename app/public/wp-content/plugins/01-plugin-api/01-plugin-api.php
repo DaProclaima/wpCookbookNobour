@@ -48,3 +48,20 @@ function wpcookbook_title( $title, $id ){
     $title = 'TOTO ' . $id;
     return $title;
 }
+
+// add_action( string $tag, callable $function_to_add, int $priority = 10, int $accepted_args = 1 )
+add_action( 'wp_footer', 'wpcookbook_footer', 15, 1 );
+/**
+ * Prints a custom message in the footer.
+ *
+ * @param mixed $args Arguments passed to the callback by corresponding
+do_action() call. Defaults to empty string.
+ */
+function wpcookbook_footer( $args ){
+    ?>
+    <p>This is a custom message to print in the footer&nbsp;! </p>
+    <p><?php var_dump( $args );?></p>
+    <?php global $wp_filter; print_r($wp_filter[current_filter()]);
+}
+
+remove_action( 'wp_footer', 'wpcookbook_footer', 15 );

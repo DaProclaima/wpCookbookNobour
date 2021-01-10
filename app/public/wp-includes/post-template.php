@@ -235,7 +235,7 @@ function get_the_guid( $post = 0 ) {
 /**
  * Display the post content.
  *
- * @since 0.71
+ * @since 0.71 5
  *
  * @param string $more_link_text Optional. Content for when there is more text.
  * @param bool   $strip_teaser   Optional. Strip teaser content before the more text. Default false.

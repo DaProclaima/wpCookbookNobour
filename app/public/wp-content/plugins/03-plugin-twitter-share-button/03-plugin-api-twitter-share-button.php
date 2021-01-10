@@ -35,4 +35,3 @@ function wpcookbook_twitter_share_button( $content ){
 	}
 	return $content;
 }
-

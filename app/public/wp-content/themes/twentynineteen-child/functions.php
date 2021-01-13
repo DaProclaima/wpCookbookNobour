@@ -1,15 +1,15 @@
 <?php
 
 // in functions.php
-add_action('wp_enqueue_scripts', 'twentynineteen_child_scripts');
+add_action( 'wp_enqueue_scripts', 'twentynineteen_child_scripts' );
 /**
  * Loads parent styles
  */
-function twentynineteen_child_scripts()
-{
-    wp_enqueue_style('parent-styles', get_parent_theme_file_uri(
-        'style.css'));
+function twentynineteen_child_scripts() {
+	wp_enqueue_style( 'parent-styles', get_parent_theme_file_uri(
+		'style.css' ) );
 }
+
 // TODO: Dans quel fichier doit-on mettre ça?  Chapitre charger les ressources JS et CSS correctement
 //add_action( 'wp_head', 'wpcookbook_head' );
 ///**
@@ -67,17 +67,17 @@ function wpcookbook_admin_scripts( $hook_suffix ) {
 }
 
 add_action( 'widgets_init', 'wpcookbook_sidebars' );
-function wpcookbook_sidebars(){
+function wpcookbook_sidebars() {
 	register_sidebar( array(
-		'name' => __( 'Header widgets', 'twentynineteen-child' ),
-		'id' => 'header-widgets',
-		'description' => __( 'The widgets added here will appear just below the header, and before the content.',
+		'name'          => __( 'Header widgets', 'twentynineteen-child' ),
+		'id'            => 'header-widgets',
+		'description'   => __( 'The widgets added here will appear just below the header, and before the content.',
 			'twentynineteen-child'
 		),
 		'before_widget' => '<div id="%1$s" class="widget header-widget %2$s">',
-		'after_widget' => '</div>',
-		'before_title' => '<h2 class="widget-title">',
-		'after_title' => '</h2>'
+		'after_widget'  => '</div>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>'
 	) );
 }
 
@@ -89,8 +89,95 @@ add_action( 'after_setup_theme', 'twentynineteen_child_setup' );
 //	register_nav_menu( 'top-bar-menu', __( 'Top bar menu', 'twentynineteenchild'
 //	) );
 //}
-function twentynineteen_child_setup(){
+function twentynineteen_child_setup() {
 	register_nav_menus( array(
 		'top-bar-menu' => __( 'Top bar menu', 'twentynineteen-child' ),
 	) );
 }
+
+add_action( 'pre_get_posts', 'wpcookbook_pre_get_posts', 10, 1 );
+/**
+ * Modifies the query on main blog page.
+ *
+ * @param $query Query object
+ */
+function wpcookbook_pre_get_posts( $query ) {
+	if ( ! is_admin() && $query->is_main_query() ) {
+		$query->set( 'order', 'ASC' );
+	}
+//	if( ! is_admin() && $query->is_main_query() && $query->is_home() ){
+//		$query->set( 'category__not_in', array( '1' ) );
+//	}
+//	if( ! is_admin() && $query->is_main_query() && $query->is_search() ){
+//		$query->set( 'post_type', array( 'post', 'page', 'my-post-type' ) );
+//	}
+//	if( ! is_admin() && $query->is_main_query() ){
+//		$query->set( 'meta_query', array(
+//			'relation' => 'AND',
+//			array(
+//				'key' => 'my_custom_field',
+//				'value' => 'display',
+//			),
+//			array(
+//				'key' => 'my_second_custom_field',
+//				'value' => 'another_value',
+//			),
+//		) );
+//	}
+//	if( ! is_admin() && $query->is_main_query() ){
+//		$query->set( 'tax_query' , array(
+//			'relation' => 'AND',
+//			array(
+//				'taxonomy' => 'category',
+//				'field' => 'slug',
+//				'terms' => array( 'wordpress' ),
+//			),
+//			array(
+//				'taxonomy' => 'post_tag',
+//				'field' => 'slug',
+//				'terms' => array( 'snippet' ),
+//			),
+//		) );
+//	}
+}
+
+add_filter( 'the_content', 'wpcookbook_related_posts', 10, 1 );
+/**
+ * Adds a related posts block to the content
+ */
+function wpcookbook_related_posts( $content ) {
+	if ( is_single() ) {
+//		$category_ids = array();
+//		$q = new WP_query( array(
+//			'posts_per_page ' => 3,
+//			'category__in' => $category_ids,
+//		) );
+		$category_ids = wp_list_pluck( get_the_category(), 'term_id' );
+		$q = new WP_query( array(
+			'posts_per_page ' => 3,
+			'category__in' => $category_ids,
+			'post__not_in' => array( get_the_ID() ),
+		) );
+		if ( $q->have_posts() ) {
+			ob_start();
+			?>
+            <div class="wpcookbook-related-posts">
+                <h3><?php esc_html_e( 'Related posts', '15-loops' ) ?></h3>
+                <ul class="wpcookbook-related-posts-list">
+					<?php
+					while ( $q->have_posts() ) {
+						$q->the_post();
+						the_title( sprintf( '<li class="wpcookbook-relatedpost"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></li>' );
+					}
+					?>
+                </ul>
+            </div>
+			<?php
+			$content .= ob_get_clean();
+			wp_reset_postdata();
+		}
+	}
+
+	return $content;
+}
+include 'twentynineteen_child_customize_register.php';

@@ -180,4 +180,105 @@ function wpcookbook_related_posts( $content ) {
 
 	return $content;
 }
+
+add_action( 'wp_head', 'wpcookbook_text_color' );
+/**
+ * Prints <style> tag to change the body text color
+ */
+function wpcookbook_text_color(){
+	$color = get_theme_mod( 'wpcookbook-text-color' );
+	if( $color ){
+		echo '<style>body{color:' . sanitize_hex_color( $color ) . ';}
+</style>';
+	}
+}
+
+///**
+// * Validates our footer text setting
+// *
+// * @param WP_Error $validity Empty WP_Error initially. If
+//there are problems, use `add()` method to add error messages.
+// * @param mixed $value The value to validate.
+// * @param WP_Customize_Setting $setting The corresponding setting.
+// */
+//function wpcookbook_validate_footer_text( $validity , $value, $setting ){
+//	if( wp_kses_post( $value ) !== $value ){
+//		$validity->add( 'invalid', __( 'Invalid string. Use only basic
+//HTML.', 'twentynineteen-child' ) );
+//	}
+//	return $validity;
+//}
+
+/**
+ * Sanitizes our footer text setting
+ * Now our field only accepts <em> and <a> tags with href attributes
+ *
+ * @param mixed $value The value to sanitize.
+ * @param WP_Customize_Setting $setting The corresponding setting.
+ */
+function wpcookbook_sanitize_footer_text( $value, $setting ){
+	return wp_kses( $value, array(
+		'em' => array(),
+		'a' => array(
+			'href' => array(),
+		),
+	) );
+}
+
+
+/**
+ * Validates our footer text setting
+ *
+ * @param WP_Error $validity Empty WP_Error initially. If
+there are problems, use `add()` method to add error messages.
+ * @param mixed $value The value to validate.
+ * @param WP_Customize_Setting $setting The corresponding setting.
+ */
+function wpcookbook_validate_footer_text( $validity , $value, $setting ){
+	if( wpcookbook_sanitize_footer_text( $value, $setting ) !== $value ){
+		$validity->add( 'invalid',
+            esc_html__( 'Invalid string. You are only allowed to use <em> and <a> tags.',
+                'twentynineteen-child' )
+        );
+	}
+	return $validity;
+}
+
+/**
+ * Displays the custom footer text.
+ * Can be used as a partial for the customizer.
+ */
+function wpcookbook_site_copyright(){
+	echo '<p class="site-copyright">';
+	if( $footer_text = get_theme_mod( 'wpcookbook-copyright-text' ) ) {
+		echo '<strong>' . $footer_text .'</strong>';
+	} else {
+		$blog_info = get_bloginfo( 'name' );
+		if ( ! empty( $blog_info ) ) : ?>
+            <a class="site-name" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
+                <?php bloginfo( 'name' ); ?>
+            </a>,
+		<?php endif; ?>
+        <a href="<?php echo esc_url( __( 'https://wordpress.org/', 'twentynineteen' ) ); ?>" class="imprint">
+			<?php
+			/* translators: %s: WordPress. */
+			printf( __( 'Proudly powered by %s.', 'twentynineteen' ),
+				'WordPress' );
+			?>
+        </a>
+		<?php
+		echo '</p>';
+	}
+}
+
+add_action( 'customize_preview_init', 'wpcookbook_enqueue_customizer_js' );
+/**
+ * Enqueues our Customizer JavaScript handler
+ */
+function wpcookbook_enqueue_customizer_js() {
+	wp_enqueue_script( 'wpcookbook_customizer', get_theme_file_uri(
+		'assets/js/customizer.js' ), array( 'customize-preview', 'jquery' ), null,
+		true );
+}
+
 include 'twentynineteen_child_customize_register.php';

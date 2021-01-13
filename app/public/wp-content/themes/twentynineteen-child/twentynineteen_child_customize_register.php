@@ -14,8 +14,12 @@ function twentynineteen_child_customize_register( $wp_customize ) {
 		'theme_supports' => '',
 		'default' => '',
 		'transport' => 'refresh',
-		'validate_callback' => '',
-		'sanitize_callback' => '',
+//		'validate_callback' => 'wpcookbook_validate_footer_text',
+////		'sanitize_callback' => 'sanitize_text_field',
+//		'sanitize_callback' => 'wp_kses_post',
+//		'sanitize_js_callback' => '',
+		'validate_callback' => 'wpcookbook_validate_footer_text',
+		'sanitize_callback' => 'wpcookbook_sanitize_footer_text',
 		'sanitize_js_callback' => '',
 	) );
 
@@ -61,4 +65,59 @@ function twentynineteen_child_customize_register( $wp_customize ) {
 		'active_callback' => '',
 		'auto_expand_sole_section' => false,
 	) );
+
+	$wp_customize->add_setting( 'wpcookbook-footer-logo', array(
+// 'sanitize_callback' => '',
+	) );
+
+//	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize,
+//		'wpcookbook-footer-logo', array(
+//			'label' => __( 'Footer logo', '16-customizer' ),
+//			'section' => 'wpcookbook-footer',
+//		)
+//	) );
+	$wp_customize->add_control( new WP_Customize_Cropped_Image_Control( $wp_customize, 'wpcookbook-footer-logo', array(
+			'label' => __( 'Footer logo', '16-customizer' ),
+			'section' => 'wpcookbook-footer',
+			'height' => 75,
+//			'width' => 150, // Default 150
+//			'flex_height' => false, // Default
+			'flex_width' => true, // Default false
+			'sanitize_callback' => 'absint',
+		)
+	) );
+
+	$wp_customize->add_setting( 'wpcookbook-text-color', array(
+		'sanitize_callback' => 'sanitize_hex_color',
+	) );
+
+	$wp_customize->add_control( new WP_Customize_Color_Control(
+		$wp_customize, 'wpcookbook-text-color', array(
+		'label' => __( 'Text Color', '16-customizer' ),
+		'section' => 'colors',
+	) ) );
+
+	$wp_customize->add_setting( 'wpcookbook-date', array(
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( new WP_Customize_Date_Time_Control(
+		$wp_customize, 'wpcookbook-date', array(
+		'label' => __( 'Date', '16-customizer' ),
+		'section' => 'wpcookbook-footer',
+		'include_time' => false, // Default true
+		'min_year' => 2019, // Default 1000
+		'allow_past_date' => false // Default true
+	) ) );
+
+	$wp_customize->selective_refresh->add_partial( 'wpcookbook-copyright-text',
+		array(
+			'selector' => '.site-copyright',
+			'container_inclusive' => true, // Default false
+			'render_callback' => 'wpcookbook_site_copyright',
+			'fallback_refresh' => true, // Default
+			'transport' => 'postMessage',
+			'validate_callback' => 'wpcookbook_validate_footer_text',
+			'sanitize_callback' => 'wpcookbook_sanitize_footer_text',
+			'sanitize_js_callback' => '',
+		) );
 }

@@ -66,3 +66,17 @@ function wpcookbook_admin_scripts( $hook_suffix ) {
 	}
 }
 
+add_action( 'widgets_init', 'wpcookbook_sidebars' );
+function wpcookbook_sidebars(){
+	register_sidebar( array(
+		'name' => __( 'Header widgets', 'twentynineteen-child' ),
+		'id' => 'header-widgets',
+		'description' => __( 'The widgets added here will appear just below the header, and before the content.',
+			'twentynineteen-child'
+		),
+		'before_widget' => '<div id="%1$s" class="widget header-widget %2$s">',
+		'after_widget' => '</div>',
+		'before_title' => '<h2 class="widget-title">',
+		'after_title' => '</h2>'
+	) );
+}

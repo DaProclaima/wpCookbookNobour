@@ -80,3 +80,17 @@ function wpcookbook_sidebars(){
 		'after_title' => '</h2>'
 	) );
 }
+
+add_action( 'after_setup_theme', 'twentynineteen_child_setup' );
+/**
+ * Setup all of our theme's functionnalities
+ */
+//function twentynineteen_child_setup(){
+//	register_nav_menu( 'top-bar-menu', __( 'Top bar menu', 'twentynineteenchild'
+//	) );
+//}
+function twentynineteen_child_setup(){
+	register_nav_menus( array(
+		'top-bar-menu' => __( 'Top bar menu', 'twentynineteen-child' ),
+	) );
+}

@@ -33,3 +33,38 @@ body {
 .header-widget {
     margin-right: 3em;
 }
+
+/*********************
+* Top bar menu
+**********************/
+.top-bar-navigation {
+    background-color: #111;
+    color: white;
+    padding: 0 1em;
+}
+.top-bar-menu {
+    color: white;
+    display: flex;
+    font-size: 14px;
+    justify-content: flex-end;
+    letter-spacing: .5px;
+    list-style: none;
+    margin: 0;
+    text-transform: uppercase;
+}
+.top-bar-menu li {
+    margin-left: 10px;
+}
+.top-bar-menu a {
+    transition: all .25s ease;
+}
+.top-bar-menu a,
+.top-bar-menu a:visited {
+    color: white;
+    opacity: .8;
+}
+.top-bar-menu a:hover,
+.top-bar-menu a:focus {
+    opacity: 1;
+    text-decoration: underline;
+}

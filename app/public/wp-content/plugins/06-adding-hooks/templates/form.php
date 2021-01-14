@@ -5,7 +5,6 @@
 defined( 'ABSPATH' ) || die();
 ?>
 
-<p><?php echo $strings['dummy_text']; ?></p>
 <form id="wpcookbook-form" action="" method="POST">
 <form id="wpcookbook-form" action="" method="POST">
 	<p>
